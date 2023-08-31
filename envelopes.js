@@ -1,6 +1,6 @@
 const express = require('express')
 const envelopesRouter = express.Router()
-const { createEnvelope, getEnvelopeById, getIndexById } = require('./utils')
+const { createEnvelope, getEnvelopeById, getIndexById, updateEnvelopesAndBalances } = require('./utils')
 
 const envelopesArr = []
 
@@ -37,5 +37,15 @@ envelopesRouter.delete('/:id', (req, res, next) => {
     }
 })
 
+envelopesRouter.put('/:id', (req, res, next) => {
+    const envelopeIndex = getIndexById(envelopesArr, req.params.id);
+    if (envelopeIndex !== -1) {
+        const updatedEnvelope = updateEnvelopesAndBalances(envelopesArr, req.params.id, req.body);
+        envelopesArr[envelopeIndex] = updatedEnvelope; // Update the array with the changes
+        res.send(updatedEnvelope);
+    } else {
+        res.status(404).send();
+    }
+});
 
 module.exports = envelopesRouter
